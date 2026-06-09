@@ -15,7 +15,7 @@
 #include "message_parse.hpp"   /* MessageParser, HeaderType */
 #include "pcan_long_frame.hpp"
 
-namespace au_4d_radar
+namespace s32_radar
 {
     class device_au_radar_node;
 
@@ -107,4 +107,4 @@ namespace au_4d_radar
         uint32_t    time_sync_pre_cloud_{0u};
     };
 
-} // namespace au_4d_radar
+} // namespace s32_radar

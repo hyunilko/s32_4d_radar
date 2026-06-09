@@ -20,7 +20,7 @@
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
 
-#include "au_4d_radar.hpp"
+#include "s32_radar.hpp"
 #include "util/uuid_helper.hpp"
 #include "util/conversion.hpp"
 
@@ -47,7 +47,7 @@ static constexpr uint32_t MAX_POINTS_PER_PKT   = 400u; // 60u -> 400u
 static constexpr uint32_t MAX_TOTAL_POINTS     = 1600u;
 static constexpr uint16_t MAX_PKTS             = 28u;
 
-namespace au_4d_radar
+namespace s32_radar
 {
 
 /* ----------------------------------------------------------------------- */
@@ -350,4 +350,4 @@ void MessageParser::parseRadarTrackMsg(uint8_t* p_buff,
     makeRadarTracksMsg(p_buff, radar_tracks_msg, complete);
 }
 
-} // namespace au_4d_radar
+} // namespace s32_radar

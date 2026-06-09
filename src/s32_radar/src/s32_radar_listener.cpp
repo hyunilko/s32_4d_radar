@@ -1,6 +1,6 @@
 
 /**
- * @file au_4d_radar_listener.cpp
+ * @file s32_radar_listener.cpp
  * @author Antonio Ko(antonioko@au-sensor.com)
  * @brief radar_msgs listener_au_radar_node Processing
  * @version 1.2
@@ -10,12 +10,12 @@
  *
  */
 
-#include "au_4d_radar_listener.hpp"
+#include "s32_radar_listener.hpp"
 
 //#include "rclcpp/rclcpp.hpp"
 // #include <radar_msgs/msg/radar_scan.hpp>
 
-namespace au_4d_radar_listener
+namespace s32_radar_listener
 {
 
 /**
@@ -73,8 +73,8 @@ listener_au_radar_node::listener_au_radar_node(const rclcpp::NodeOptions & optio
 
 }
 
-}  // namespace au_4d_radar_listener
+}  // namespace s32_radar_listener
 
 #include "rclcpp_components/register_node_macro.hpp"
 
-RCLCPP_COMPONENTS_REGISTER_NODE(au_4d_radar_listener::listener_au_radar_node)
+RCLCPP_COMPONENTS_REGISTER_NODE(s32_radar_listener::listener_au_radar_node)

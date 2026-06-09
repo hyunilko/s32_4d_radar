@@ -1,5 +1,5 @@
 /**
- * @file au_4d_radar.cpp
+ * @file s32_radar.cpp
  * @author antonioko@au-sensor.com
  * @brief AU 4D Radar ROS2 driver node
  * @version 2.0
@@ -9,10 +9,10 @@
  *
  */
 
-#include "au_4d_radar.hpp"
+#include "s32_radar.hpp"
 #include "util/yamlParser.hpp"
 
-namespace au_4d_radar {
+namespace s32_radar {
 
 /* ---------- static member definitions ------------------------------------ */
 std::atomic<bool>        device_au_radar_node::shutdown_requested_{false};
@@ -147,7 +147,7 @@ void device_au_radar_node::publishHeartbeat(mon_msgs::msg::RadarHealth& msg)
     pub_radar_mon_->publish(msg);
 }
 
-} // namespace au_4d_radar
+} // namespace s32_radar
 
 #include "rclcpp_components/register_node_macro.hpp"
-RCLCPP_COMPONENTS_REGISTER_NODE(au_4d_radar::device_au_radar_node)
+RCLCPP_COMPONENTS_REGISTER_NODE(s32_radar::device_au_radar_node)

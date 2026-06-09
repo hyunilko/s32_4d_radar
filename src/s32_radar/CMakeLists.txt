@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(au_4d_radar)
+project(s32_radar)
 
 # Default to C++23
 if(NOT CMAKE_CXX_STANDARD)
@@ -43,7 +43,7 @@ include_directories(include)
 set(node_plugins "")
 
 add_library(device_au_radar_node SHARED
-  src/au_4d_radar.cpp
+  src/s32_radar.cpp
   src/util/yamlParser.cpp
   src/message_parse.cpp
   src/pcan_long_frame_handler.cpp
@@ -81,8 +81,8 @@ ament_target_dependencies(device_au_radar_node
   "urdf"
   )
 
-rclcpp_components_register_nodes(device_au_radar_node "au_4d_radar::device_au_radar_node")
-set(node_plugins "${node_plugins}au_4d_radar::device_au_radar_node;$<TARGET_FILE:device_au_radar_node>\n")
+rclcpp_components_register_nodes(device_au_radar_node "s32_radar::device_au_radar_node")
+set(node_plugins "${node_plugins}s32_radar::device_au_radar_node;$<TARGET_FILE:device_au_radar_node>\n")
 
 # since the package installs libraries without exporting them
 # it needs to make sure that the library path is being exported
@@ -92,7 +92,7 @@ if(NOT WIN32)
 endif()
 
 add_library(listener_au_radar_node SHARED
-  src/au_4d_radar_listener.cpp)
+  src/s32_radar_listener.cpp)
 target_compile_definitions(listener_au_radar_node
   PRIVATE "COMPOSITION_BUILDING_DLL")
 ament_target_dependencies(listener_au_radar_node
@@ -100,8 +100,8 @@ ament_target_dependencies(listener_au_radar_node
   "rclcpp_components"
   "sensor_msgs"
   "radar_msgs")
-rclcpp_components_register_nodes(listener_au_radar_node "au_4d_radar_listener::listener_au_radar_node")
-set(node_plugins "${node_plugins}au_4d_radar_listener::listener_au_radar_node;$<TARGET_FILE:listener_au_radar_node>\n")
+rclcpp_components_register_nodes(listener_au_radar_node "s32_radar_listener::listener_au_radar_node")
+set(node_plugins "${node_plugins}s32_radar_listener::listener_au_radar_node;$<TARGET_FILE:listener_au_radar_node>\n")
 
 install(TARGETS
   device_au_radar_node

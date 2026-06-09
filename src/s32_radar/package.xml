@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="3">
-  <name>au_4d_radar</name>
+  <name>s32_radar</name>
   <version>1.0.0</version>
   <description>AU 4D radar node</description>
   <maintainer email="antonioko@au-sensor.com">hyunil.ko</maintainer>

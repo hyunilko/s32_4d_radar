@@ -1,13 +1,13 @@
-AU 4D Radar
-===========
+S32 Radar
+=========
 
 ## Introduction
 
-au_4d_radar is a collection of ROS2 packages supporting 4D Radar Sensors.
+s32_radar is a collection of ROS2 packages supporting 4D Radar Sensors.
 This program has been tested on ubuntu 22.04 ROS2 humble.
 Supports automatic connection and communication functions without having to set the IP of each Radar sensor in a can network environment.
 
-## How to build the au_4d_radar
+## How to build the s32_radar
 
 **Create a new work directory of ROS2**:
 
@@ -19,8 +19,8 @@ mkdir -p ~/share/ros2_ws/src
 
 ```bash
 $ cd ~/share/ros2_ws/src
-$ git clone https://github.com/auradar/au_4d_radar.git
-$ cd au_4d_radar
+$ git clone https://github.com/auradar/s32_radar.git
+$ cd s32_radar
 $ git checkout vx.x
 $ git submodule update --init --recursive
 ```
@@ -53,7 +53,7 @@ radars:
 
 ```bash
 $ cd ~/share/ros2_ws
-$ colcon build --cmake-args -DCMAKE_BUILD_TYPE=Relaese --packages-up-to au_4d_radar
+$ colcon build --cmake-args -DCMAKE_BUILD_TYPE=Relaese --packages-up-to s32_radar
 ```
 
 **Running Radar Node using launch actions**:
@@ -61,7 +61,7 @@ $ colcon build --cmake-args -DCMAKE_BUILD_TYPE=Relaese --packages-up-to au_4d_ra
 ```bash
 $ cd ~/share/ros2_ws
 source install/local_setup.bash
-ros2 launch au_4d_radar run_radar.launch.py
+ros2 launch s32_radar run_radar.launch.py
 ```
 
 ### Run-time composition using ROS services
@@ -83,7 +83,7 @@ ros2 run rclcpp_components component_container
 ```bash
 $ cd ~/share/ros2_ws
 source install/local_setup.bash
-ros2 component load /ComponentManager au_4d_radar au_4d_radar::device_au_radar_node
+ros2 component load /ComponentManager s32_radar s32_radar::device_au_radar_node
 ```
 
 **Run in shell 3**:
@@ -93,7 +93,7 @@ ros2 component load /ComponentManager au_4d_radar au_4d_radar::device_au_radar_n
 ```bash
 $ cd ~/share/ros2_ws
 source install/local_setup.bash
-ros2 component load /ComponentManager au_4d_radar au_4d_radar::Listener
+ros2 component load /ComponentManager s32_radar s32_radar::Listener
 ```
 
 ## Package Install

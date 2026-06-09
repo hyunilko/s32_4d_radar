@@ -6,7 +6,7 @@
 #include "rclcpp/logger.hpp"
 #include "pcan_short_frame.hpp"
 
-namespace au_4d_radar
+namespace s32_radar
 {
     class device_au_radar_node;
 
@@ -35,4 +35,4 @@ namespace au_4d_radar
         device_au_radar_node* radar_node_;
     };
 
-} // namespace au_4d_radar
+} // namespace s32_radar

@@ -6,7 +6,7 @@
 #include <radar_msgs/msg/radar_scan.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 
-namespace au_4d_radar_listener
+namespace s32_radar_listener
 {
 
 class listener_au_radar_node : public rclcpp::Node
@@ -20,6 +20,6 @@ private:
   rclcpp::Time last_msg_time_{0, 0, RCL_ROS_TIME};
 };
 
-}  // namespace au_4d_radar_listener
+}  // namespace s32_radar_listener
 
 #endif  // AU4DRADAR__LISTENER_COMPONENT_HPP

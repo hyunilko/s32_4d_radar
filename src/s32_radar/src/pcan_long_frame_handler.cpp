@@ -13,12 +13,12 @@
 #include <cstring>
 #include <unistd.h>
 
-#include "au_4d_radar.hpp"
+#include "s32_radar.hpp"
 #include "util/conversion.hpp"
 #include "util/yamlParser.hpp"
 #include "pcan_long_frame_handler.hpp"
 
-namespace au_4d_radar {
+namespace s32_radar {
 
 /* =========================================================================
  * Construction / destruction
@@ -494,4 +494,4 @@ void PcanLongFrameHandler::handleRadarTrackMessage(
     }
 }
 
-} // namespace au_4d_radar
+} // namespace s32_radar

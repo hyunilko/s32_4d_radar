@@ -15,7 +15,7 @@
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include "util/yamlParser.hpp"
 
-namespace au_4d_radar
+namespace s32_radar
 {
 
 /* -----------------------------------------------------------------------
@@ -74,6 +74,6 @@ private:
     rclcpp::Logger logger_;
 };
 
-} // namespace au_4d_radar
+} // namespace s32_radar
 
 #endif // MESSAGE_PARSE_HPP

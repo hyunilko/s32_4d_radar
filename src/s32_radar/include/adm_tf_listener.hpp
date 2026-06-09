@@ -5,7 +5,7 @@
 #include "tf2_ros/transform_listener.h"
 #include "tf2_ros/buffer.h"
 
-namespace au_4d_radar
+namespace s32_radar
 {
     class device_au_radar_node;
 
@@ -26,5 +26,5 @@ namespace au_4d_radar
         device_au_radar_node* radar_node_;
     };
 
-}  // namespace au_4d_radar
+}  // namespace s32_radar
 #endif // __ADM_TF_LISTENER_NODE_HPP__

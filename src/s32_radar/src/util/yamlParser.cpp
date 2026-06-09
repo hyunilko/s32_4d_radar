@@ -26,7 +26,7 @@ static constexpr float kDeg2Rad = static_cast<float>(M_PI / 180.0);
 
 std::string YamlParser::getYamlPath()
 {
-    return ament_index_cpp::get_package_share_directory("au_4d_radar")
+    return ament_index_cpp::get_package_share_directory("s32_radar")
            + "/config/system_info.yaml";
 }
 

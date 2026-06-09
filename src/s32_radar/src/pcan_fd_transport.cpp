@@ -280,7 +280,9 @@ void PcanFdTransport::poll_rx(void)
         if ((rx.MSGTYPE & PCAN_MESSAGE_STATUS) != 0u) {
             if (!cfg_.long_frame.quiet) {
                 const uint32_t ec = Conversion::be_to_u32(rx.DATA);
-                print_pcan_err("[STATUS]", static_cast<TPCANStatus>(ec));
+                if (ec != 0u) {
+                    print_pcan_err("[STATUS]", static_cast<TPCANStatus>(ec));
+                }
             }
             continue;
         }

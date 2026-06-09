@@ -17,10 +17,10 @@
 #include "rclcpp/rclcpp.hpp"
 #include "util/conversion.hpp"
 
-#include "au_4d_radar.hpp"
+#include "s32_radar.hpp"
 #include "pcan_short_frame_handler.hpp"
 
-namespace au_4d_radar
+namespace s32_radar
 {
 
 /**
@@ -144,4 +144,4 @@ bool PcanShortFrameHandler::send_time_sync(uint8_t dev_id, uint32_t uniq_id)
                dev_id, static_cast<uint32_t>(ShortCanCmd::TIME_SYNC), uniq_id, payload, sizeof(payload));
 }
 
-} // namespace au_4d_radar
+} // namespace s32_radar

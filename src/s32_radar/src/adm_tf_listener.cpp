@@ -12,10 +12,10 @@
 #include "tf2_ros/create_timer_ros.h"
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2/LinearMath/Matrix3x3.h>
-#include "au_4d_radar.hpp"
+#include "s32_radar.hpp"
 #include "util/yamlParser.hpp"
 
-namespace au_4d_radar {
+namespace s32_radar {
 
 /**
  * @brief Constructs an AdmTFListener and starts a 1-second wall timer for TF lookups.
@@ -123,4 +123,4 @@ std::tuple<double, double, double> AdmTFListener::TransformToRPY(const geometry_
 }
 
 
-} // namespace au_4d_radar
+} // namespace s32_radar

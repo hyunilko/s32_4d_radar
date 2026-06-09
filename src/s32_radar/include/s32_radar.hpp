@@ -1,5 +1,5 @@
-#ifndef AU_4D_RADAR_HPP
-#define AU_4D_RADAR_HPP
+#ifndef S32_RADAR_HPP
+#define S32_RADAR_HPP
 
 #include <atomic>
 #include <csignal>
@@ -16,7 +16,7 @@
 #include "pcan_fd_transport.hpp"
 #include "adm_tf_listener.hpp"
 
-namespace au_4d_radar
+namespace s32_radar
 {
 
 class device_au_radar_node : public rclcpp::Node
@@ -86,6 +86,6 @@ private:
     static device_au_radar_node*      instance_;
 };
 
-} // namespace au_4d_radar
+} // namespace s32_radar
 
-#endif  // AU_4D_RADAR_HPP
+#endif  // S32_RADAR_HPP
