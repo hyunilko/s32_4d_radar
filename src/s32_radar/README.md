@@ -78,17 +78,17 @@ ros2 run rclcpp_components component_container
 
 **Run in shell 2**:
 
-> In the second shell load device_au_radar_node node
+> In the second shell load device_radar_node node
 
 ```bash
 $ cd ~/share/ros2_ws
 source install/local_setup.bash
-ros2 component load /ComponentManager s32_radar s32_radar::device_au_radar_node
+ros2 component load /ComponentManager s32_radar s32_radar::device_radar_node
 ```
 
 **Run in shell 3**:
 
-> In the third shell load Listener node(If you want to check subscriptions for messages from the device_au_radar_node publisher)
+> In the third shell load Listener node(If you want to check subscriptions for messages from the device_radar_node publisher)
 
 ```bash
 $ cd ~/share/ros2_ws

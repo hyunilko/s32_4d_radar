@@ -31,7 +31,7 @@ namespace s32_radar
  * @param logger ROS2 logger; defaults to "PcanShortFrameHandler".
  * @param quiet  If true, suppresses INFO/DEBUG log output.
  */
-PcanShortFrameHandler::PcanShortFrameHandler(device_au_radar_node* node,
+PcanShortFrameHandler::PcanShortFrameHandler(device_radar_node* node,
                                              PcanShortFrame& can,
                                              rclcpp::Logger logger,
                                              bool quiet)

@@ -7,12 +7,12 @@
 
 namespace s32_radar
 {
-    class device_au_radar_node;
+    class device_radar_node;
 
     class AdmTFListener {
 
     public:
-        AdmTFListener(device_au_radar_node* node);
+        AdmTFListener(device_radar_node* node);
         ~AdmTFListener();
 
     private:
@@ -23,7 +23,7 @@ namespace s32_radar
         void lookupTransform();
         std::tuple<double, double, double> TransformToRPY(const geometry_msgs::msg::TransformStamped& transform);
 
-        device_au_radar_node* radar_node_;
+        device_radar_node* radar_node_;
     };
 
 }  // namespace s32_radar

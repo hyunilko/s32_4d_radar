@@ -22,7 +22,7 @@ namespace s32_radar {
  *
  * @param node Pointer to the owning radar node, used for clock, timers, and logging.
  */
-AdmTFListener::AdmTFListener(device_au_radar_node* node): radar_node_(node) {
+AdmTFListener::AdmTFListener(device_radar_node* node): radar_node_(node) {
     tf_buffer_ = std::make_shared<tf2_ros::Buffer>(radar_node_->get_clock());
     auto timer_interface = std::make_shared<tf2_ros::CreateTimerROS>(radar_node_->get_node_base_interface(), radar_node_->get_node_timers_interface());
     tf_buffer_->setCreateTimerInterface(timer_interface);

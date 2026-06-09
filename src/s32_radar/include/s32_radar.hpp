@@ -19,10 +19,10 @@
 namespace s32_radar
 {
 
-class device_au_radar_node : public rclcpp::Node
+class device_radar_node : public rclcpp::Node
 {
 public:
-    explicit device_au_radar_node(const rclcpp::NodeOptions& options);
+    explicit device_radar_node(const rclcpp::NodeOptions& options);
 
     /* ----- publish API (called by handlers) ------------------------------ */
     void publishHeartbeat(mon_msgs::msg::RadarHealth& msg);
@@ -83,7 +83,7 @@ private:
     /* Set to true in the signal handler (async-signal-safe); the node's
      * destructor checks this flag for graceful cleanup. */
     static std::atomic<bool>          shutdown_requested_;
-    static device_au_radar_node*      instance_;
+    static device_radar_node*      instance_;
 };
 
 } // namespace s32_radar

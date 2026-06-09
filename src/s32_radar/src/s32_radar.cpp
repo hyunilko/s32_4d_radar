@@ -15,8 +15,8 @@
 namespace s32_radar {
 
 /* ---------- static member definitions ------------------------------------ */
-std::atomic<bool>        device_au_radar_node::shutdown_requested_{false};
-device_au_radar_node*    device_au_radar_node::instance_ = nullptr;
+std::atomic<bool>        device_radar_node::shutdown_requested_{false};
+device_radar_node*    device_radar_node::instance_ = nullptr;
 
 /* ---------- constructor -------------------------------------------------- */
 
@@ -28,8 +28,8 @@ device_au_radar_node*    device_au_radar_node::instance_ = nullptr;
  *
  * @param options ROS2 node options forwarded to the base Node constructor.
  */
-device_au_radar_node::device_au_radar_node(const rclcpp::NodeOptions& options)
-    : Node("device_au_radar_node", options)
+device_radar_node::device_radar_node(const rclcpp::NodeOptions& options)
+    : Node("device_radar_node", options)
     , can_fd_transfer_(PcanFdTransport::Config{})
     , can_short_handler_(this, can_fd_transfer_.short_frame())
     , can_long_handler_(this, can_fd_transfer_.long_frame())
@@ -85,7 +85,7 @@ device_au_radar_node::device_au_radar_node(const rclcpp::NodeOptions& options)
  *
  * @param sig Signal number received (SIGINT / SIGHUP / SIGTERM).
  */
-void device_au_radar_node::interruptHandler(int sig)
+void device_radar_node::interruptHandler(int sig)
 {
     (void)sig;
     shutdown_requested_.store(true);
@@ -97,7 +97,7 @@ void device_au_radar_node::interruptHandler(int sig)
  *
  * @return 0 always.
  */
-int device_au_radar_node::initInterruptHandler(void)
+int device_radar_node::initInterruptHandler(void)
 {
     signal(SIGINT,  interruptHandler); // SIGINT is a signal generated when an interrupt (Ctrl+C) is received in the terminal.
     signal(SIGHUP,  interruptHandler); // SIGHUP is a signal that occurs when a terminal connection is disconnected (Hangup) or a control terminal is closed.
@@ -111,7 +111,7 @@ int device_au_radar_node::initInterruptHandler(void)
  * @brief Thread-safe publish of a RadarScan message on /device/au/radar/scan.
  * @param msg Message to publish.
  */
-void device_au_radar_node::publishRadarScanMsg(radar_msgs::msg::RadarScan& msg)
+void device_radar_node::publishRadarScanMsg(radar_msgs::msg::RadarScan& msg)
 {
     std::lock_guard<std::mutex> lk(mtx_msg_publisher_);
     pub_radar_scan_->publish(msg);
@@ -121,7 +121,7 @@ void device_au_radar_node::publishRadarScanMsg(radar_msgs::msg::RadarScan& msg)
  * @brief Thread-safe publish of a RadarTracks message on /device/au/radar/track.
  * @param msg Message to publish.
  */
-void device_au_radar_node::publishRadarTrackMsg(radar_msgs::msg::RadarTracks& msg)
+void device_radar_node::publishRadarTrackMsg(radar_msgs::msg::RadarTracks& msg)
 {
     std::lock_guard<std::mutex> lk(mtx_msg_publisher_);
     pub_radar_track_->publish(msg);
@@ -131,7 +131,7 @@ void device_au_radar_node::publishRadarTrackMsg(radar_msgs::msg::RadarTracks& ms
  * @brief Thread-safe publish of a PointCloud2 message on /device/au/radar/point_cloud2.
  * @param msg Message to publish.
  */
-void device_au_radar_node::publishRadarPointCloud2(sensor_msgs::msg::PointCloud2& msg)
+void device_radar_node::publishRadarPointCloud2(sensor_msgs::msg::PointCloud2& msg)
 {
     std::lock_guard<std::mutex> lk(mtx_msg_publisher_);
     pub_radar_point_cloud2_->publish(msg);
@@ -141,7 +141,7 @@ void device_au_radar_node::publishRadarPointCloud2(sensor_msgs::msg::PointCloud2
  * @brief Thread-safe publish of a RadarHealth message on /device/au/radar/status.
  * @param msg Message to publish.
  */
-void device_au_radar_node::publishHeartbeat(mon_msgs::msg::RadarHealth& msg)
+void device_radar_node::publishHeartbeat(mon_msgs::msg::RadarHealth& msg)
 {
     std::lock_guard<std::mutex> lk(mtx_msg_publisher_);
     pub_radar_mon_->publish(msg);
@@ -150,4 +150,4 @@ void device_au_radar_node::publishHeartbeat(mon_msgs::msg::RadarHealth& msg)
 } // namespace s32_radar
 
 #include "rclcpp_components/register_node_macro.hpp"
-RCLCPP_COMPONENTS_REGISTER_NODE(s32_radar::device_au_radar_node)
+RCLCPP_COMPONENTS_REGISTER_NODE(s32_radar::device_radar_node)

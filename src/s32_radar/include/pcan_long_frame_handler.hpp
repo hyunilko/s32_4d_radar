@@ -17,12 +17,12 @@
 
 namespace s32_radar
 {
-    class device_au_radar_node;
+    class device_radar_node;
 
     class PcanLongFrameHandler
     {
     public:
-        explicit PcanLongFrameHandler(device_au_radar_node* node, PcanLongFrame& can);
+        explicit PcanLongFrameHandler(device_radar_node* node, PcanLongFrame& can);
         ~PcanLongFrameHandler();
 
         void start();
@@ -67,7 +67,7 @@ namespace s32_radar
         static constexpr uint32_t kMsgTypeOffset     = 4u;
 
         /* Back-pointer to the owning ROS2 node */
-        device_au_radar_node* radar_node_;
+        device_radar_node* radar_node_;
 
         /* CAN Long Frame layer */
         PcanLongFrame& can_long_;

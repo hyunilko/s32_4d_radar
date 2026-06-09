@@ -9,10 +9,10 @@
 namespace s32_radar_listener
 {
 
-class listener_au_radar_node : public rclcpp::Node
+class listener_radar_node : public rclcpp::Node
 {
 public:
-  explicit listener_au_radar_node(const rclcpp::NodeOptions & options);
+  explicit listener_radar_node(const rclcpp::NodeOptions & options);
 
 private:
   rclcpp::Subscription<radar_msgs::msg::RadarScan>::SharedPtr sub_;

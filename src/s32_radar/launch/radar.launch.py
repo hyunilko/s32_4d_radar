@@ -15,8 +15,8 @@ def generate_launch_description():
         composable_node_descriptions=[
             ComposableNode(
                 package='s32_radar',
-                plugin='s32_radar::device_au_radar_node',
-                name='device_au_radar_node',
+                plugin='s32_radar::device_radar_node',
+                name='device_radar_node',
                 extra_arguments=[{'log_level': 'RELEASE'}]
             )
         ],

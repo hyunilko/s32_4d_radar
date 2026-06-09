@@ -8,13 +8,13 @@
 
 namespace s32_radar
 {
-    class device_au_radar_node;
+    class device_radar_node;
 
     class PcanShortFrameHandler
     {
     public:
         explicit PcanShortFrameHandler(
-            device_au_radar_node* node,
+            device_radar_node* node,
             PcanShortFrame& can,
             rclcpp::Logger logger = rclcpp::get_logger("PcanShortFrameHandler"),
             bool quiet = false);
@@ -32,7 +32,7 @@ namespace s32_radar
         rclcpp::Logger  logger_;
         bool            quiet_ = true;
 
-        device_au_radar_node* radar_node_;
+        device_radar_node* radar_node_;
     };
 
 } // namespace s32_radar

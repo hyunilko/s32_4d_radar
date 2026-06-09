@@ -2,7 +2,7 @@
 /**
  * @file s32_radar_listener.cpp
  * @author Antonio Ko(antonioko@au-sensor.com)
- * @brief radar_msgs listener_au_radar_node Processing
+ * @brief radar_msgs listener_radar_node Processing
  * @version 1.2
  * @date 2026-03
  *
@@ -27,8 +27,8 @@ namespace s32_radar_listener
  *
  * @param options ROS2 node options forwarded to the base Node constructor.
  */
-listener_au_radar_node::listener_au_radar_node(const rclcpp::NodeOptions & options)
-: Node("listener_au_radar_node", options)
+listener_radar_node::listener_radar_node(const rclcpp::NodeOptions & options)
+: Node("listener_radar_node", options)
 {
 #ifdef DEBUG_BUILD
   if (rcutils_logging_set_logger_level(this->get_logger().get_name(), RCUTILS_LOG_SEVERITY_DEBUG) != RCUTILS_RET_OK) {
@@ -77,4 +77,4 @@ listener_au_radar_node::listener_au_radar_node(const rclcpp::NodeOptions & optio
 
 #include "rclcpp_components/register_node_macro.hpp"
 
-RCLCPP_COMPONENTS_REGISTER_NODE(s32_radar_listener::listener_au_radar_node)
+RCLCPP_COMPONENTS_REGISTER_NODE(s32_radar_listener::listener_radar_node)

@@ -30,7 +30,7 @@ namespace s32_radar {
  * @param node Pointer to the owning radar node (for publishing and logging).
  * @param can  Reference to the PcanLongFrame layer (direct, no PcanFdTransport indirection).
  */
-PcanLongFrameHandler::PcanLongFrameHandler(device_au_radar_node* node,
+PcanLongFrameHandler::PcanLongFrameHandler(device_radar_node* node,
                                            PcanLongFrame& can)
     : radar_node_(node)
     , can_long_(can)

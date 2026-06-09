@@ -42,7 +42,7 @@ include_directories(include)
 # create ament index resource which references the libraries in the binary dir
 set(node_plugins "")
 
-add_library(device_au_radar_node SHARED
+add_library(device_radar_node SHARED
   src/s32_radar.cpp
   src/util/yamlParser.cpp
   src/message_parse.cpp
@@ -53,22 +53,22 @@ add_library(device_au_radar_node SHARED
   src/pcan_long_frame.cpp  
   src/adm_tf_listener.cpp)
 
-target_compile_definitions(device_au_radar_node
+target_compile_definitions(device_radar_node
   PRIVATE "COMPOSITION_BUILDING_DLL")
 
-target_include_directories(device_au_radar_node
+target_include_directories(device_radar_node
     PRIVATE
     /usr/local/include
 )
 
-target_link_libraries(device_au_radar_node
+target_link_libraries(device_radar_node
     ${YAML_CPP_LIBRARIES}
     pthread
     Eigen3::Eigen
     pcanbasic
 )
 
-ament_target_dependencies(device_au_radar_node
+ament_target_dependencies(device_radar_node
   "rclcpp"
   "rclcpp_components"
   "sensor_msgs"
@@ -81,8 +81,8 @@ ament_target_dependencies(device_au_radar_node
   "urdf"
   )
 
-rclcpp_components_register_nodes(device_au_radar_node "s32_radar::device_au_radar_node")
-set(node_plugins "${node_plugins}s32_radar::device_au_radar_node;$<TARGET_FILE:device_au_radar_node>\n")
+rclcpp_components_register_nodes(device_radar_node "s32_radar::device_radar_node")
+set(node_plugins "${node_plugins}s32_radar::device_radar_node;$<TARGET_FILE:device_radar_node>\n")
 
 # since the package installs libraries without exporting them
 # it needs to make sure that the library path is being exported
@@ -91,21 +91,21 @@ if(NOT WIN32)
     "${ament_cmake_package_templates_ENVIRONMENT_HOOK_LIBRARY_PATH}")
 endif()
 
-add_library(listener_au_radar_node SHARED
+add_library(listener_radar_node SHARED
   src/s32_radar_listener.cpp)
-target_compile_definitions(listener_au_radar_node
+target_compile_definitions(listener_radar_node
   PRIVATE "COMPOSITION_BUILDING_DLL")
-ament_target_dependencies(listener_au_radar_node
+ament_target_dependencies(listener_radar_node
   "rclcpp"
   "rclcpp_components"
   "sensor_msgs"
   "radar_msgs")
-rclcpp_components_register_nodes(listener_au_radar_node "s32_radar_listener::listener_au_radar_node")
-set(node_plugins "${node_plugins}s32_radar_listener::listener_au_radar_node;$<TARGET_FILE:listener_au_radar_node>\n")
+rclcpp_components_register_nodes(listener_radar_node "s32_radar_listener::listener_radar_node")
+set(node_plugins "${node_plugins}s32_radar_listener::listener_radar_node;$<TARGET_FILE:listener_radar_node>\n")
 
 install(TARGETS
-  device_au_radar_node
-  listener_au_radar_node
+  device_radar_node
+  listener_radar_node
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
