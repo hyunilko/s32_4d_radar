@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<robot name="morning_car" xmlns:xacro="http://ros.org/wiki/xacro">
+
+<!-- Morning referens position, center of the rear wheels -->
+<link name="base_link"/>
+
+<!-- Hesai Pandar 64ch LiDAR -->
+<joint name="base_roof_lidar" type="fixed">
+    <parent link="base_link"/>
+    <child link="hesai_lidar"/>
+    <origin xyz="0 0 0.2777" rpy="0 0 0"/>
+</joint>
+
+<link name="hesai_lidar">
+    <visual>
+      <geometry>
+        <cylinder length="0.04845" radius="0.059"/>
+      </geometry>
+      <material name="Red">
+        <color rgba="1.0 0 0 1.0"/>
+      </material>
+    </visual>
+</link>
+
+<!-- AU RADAR, Unified -->
+<joint name="base_au_radar_unified" type="fixed">
+    <parent link="base_link"/>
+    <child link="RADARS"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+</joint>
+
+<link name="RADARS">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="Red">
+        <color rgba="1.0 0 0 1.0"/>
+      </material>
+    </visual>
+</link>
+
+</robot>

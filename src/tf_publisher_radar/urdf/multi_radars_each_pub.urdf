@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<robot name="morning_car" xmlns:xacro="http://ros.org/wiki/xacro">
+
+<!-- Morning referens position, center of the rear wheels -->
+<link name="base_link"/>
+
+<!-- Hesai Pandar 64ch LiDAR -->
+<joint name="base_roof_lidar" type="fixed">
+    <parent link="base_link"/>
+    <child link="hesai_lidar"/>
+    <origin xyz="0.716 -0.189 1.537" rpy="0 0 0"/>
+</joint>
+
+<link name="hesai_lidar">
+    <visual>
+      <geometry>
+        <cylinder length="0.2" radius="0.2"/>
+      </geometry>
+      <material name="Red">
+        <color rgba="1.0 0 0 1.0"/>
+      </material>
+    </visual>
+</link>
+
+<!-- AU RADAR, Front -->
+<joint name="base_au_radar_front" type="fixed">
+    <parent link="base_link"/>
+    <child link="RADAR_FRONT"/>
+    <origin xyz="1.665 -0.189 0.0249" rpy="0 0 0"/>
+</joint>
+
+<link name="RADAR_FRONT">
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+      <material name="Red">
+        <color rgba="1.0 0 0 1.0"/>
+      </material>
+    </visual>
+</link>
+
+<!-- AU RADAR, Front Right -->
+<joint name="base_au_radar_front_right" type="fixed">
+    <parent link="base_link"/>
+    <child link="RADAR_FRONT_RIGHT"/>
+    <origin xyz="1.546 -1.002 0.0849" rpy="0 0 -2.0944"/>
+</joint>
+
+<link name="RADAR_FRONT_RIGHT">
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+      <material name="Red">
+        <color rgba="1.0 0 0 1.0"/>
+      </material>
+    </visual>
+</link>
+
+<!-- AU RADAR, Rear Right -->
+<joint name="base_au_radar_rear_right" type="fixed">
+    <parent link="base_link"/>
+    <child link="RADAR_REAR_RIGHT"/>
+    <origin xyz="-1.797 -0.990 0.0849" rpy="0 3.1416 -2.0944"/>
+</joint>
+
+<link name="RADAR_REAR_RIGHT">
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+      <material name="Red">
+        <color rgba="1.0 0 0 1.0"/>
+      </material>
+    </visual>
+</link>
+
+<!-- AU RADAR, Front Left -->
+<joint name="base_au_radar_front_left" type="fixed">
+    <parent link="base_link"/>
+    <child link="RADAR_FRONT_LEFT"/>
+    <origin xyz="1.546 0.624 0.0849" rpy="0 3.1416 2.0944"/>
+</joint>
+
+<link name="RADAR_FRONT_LEFT">
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+      <material name="Red">
+        <color rgba="1.0 0 0 1.0"/>
+      </material>
+    </visual>
+</link>
+
+<!-- AU RADAR, Rear Left -->
+<joint name="base_au_radar_rear_left" type="fixed">
+    <parent link="base_link"/>
+    <child link="RADAR_REAR_LEFT"/>
+    <origin xyz="-1.797 0.612 0.0849" rpy="0 0 2.0944"/>
+</joint>
+
+<link name="RADAR_REAR_LEFT">
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+      <material name="Red">
+        <color rgba="1.0 0 0 1.0"/>
+      </material>
+    </visual>
+</link>
+
+<!-- AU RADAR, Unified -->
+<joint name="base_au_radar_unified" type="fixed">
+  <parent link="base_link"/>
+  <child link="RADARS"/>
+  <origin xyz="0 0 0" rpy="0 0 0"/>
+</joint>
+
+<link name="RADARS">
+  <visual>
+    <geometry>
+      <box size="0.05 0.05 0.05"/>
+    </geometry>
+    <material name="Red">
+      <color rgba="1.0 0 0 1.0"/>
+    </material>
+  </visual>
+</link>
+
+</robot>
