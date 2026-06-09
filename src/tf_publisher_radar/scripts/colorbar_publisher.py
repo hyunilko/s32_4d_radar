@@ -14,8 +14,8 @@ class ColorbarPublisher(Node):
         super().__init__('colorbar_publisher')
 
         self.declare_parameter('topic', '/radar_velocity_colorbar')
-        self.declare_parameter('min_velocity', -27.8)
-        self.declare_parameter('max_velocity', 27.8)
+        self.declare_parameter('min_velocity', -30)
+        self.declare_parameter('max_velocity', 30)
         self.declare_parameter('label', 'Velocity (m/s)')
         self.declare_parameter('width_px', 120)
         self.declare_parameter('height_px', 500)

@@ -15,7 +15,5 @@ done
 
 ulimit -c unlimited
 
-rm *.txt
-
 source install/local_setup.bash
 ros2 launch s32_radar radar.launch.py 2>&1 | tee "debug-log-$(date +%F-%H%M%S).txt"

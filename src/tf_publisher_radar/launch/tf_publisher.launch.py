@@ -38,8 +38,8 @@ def launch_setup(context, *args, **kwargs):
             output='log',
             parameters=[{
                 'topic':        '/radar_velocity_colorbar',
-                'min_velocity': -27.8,
-                'max_velocity':  27.8,
+                'min_velocity': -30,
+                'max_velocity':  30,
                 'label':        'Velocity (m/s)',
                 'width_px':     120,
                 'height_px':    500,
