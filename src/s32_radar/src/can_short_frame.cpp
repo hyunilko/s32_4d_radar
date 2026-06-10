@@ -5,12 +5,13 @@
  * @version 1.0
  * @date 2026-03
  *
- * @copyright Copyright AU (c) 2026
- *
  * @details Wire format — Application Layer:
  *          Bytes 00–02: Command ID (3 B, big-endian)
  *          Bytes 03–05: Unique ID   (4 B, big-endian)
  *          Bytes 07+  : Payload     (up to 57 bytes)
+*
+ * @copyright Copyright AU (c) 2026
+ *
  */
 
 #include <cstring>

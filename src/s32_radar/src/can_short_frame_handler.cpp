@@ -5,10 +5,11 @@
  * @version 1.0
  * @date 2026-03
  *
- * @copyright Copyright AU (c) 2026
- *
  * @details Wraps PcanFdTransport's short-frame callback to provide:
  *          - Automatic TIME_SYNC response whenever a HEART_BEAT is received.
+ *
+ * @copyright Copyright AU (c) 2026
+ *  
  */
 
 #include <ctime>

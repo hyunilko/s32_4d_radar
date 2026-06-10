@@ -2,10 +2,14 @@
  * @file socketcan_fd_transport.cpp
  * @author antonioko@au-sensor.com
  * @brief SocketCAN FD transport layer — hardware I/O, frame routing and callback wrappers.
+ * @version 1.0
+ * @date 2026-06
  *
- * Uses the Linux kernel SocketCAN interface (PF_CAN / SOCK_RAW / CAN_RAW) with
- * CAN_RAW_FD_FRAMES enabled.  No proprietary library is required; any hardware
- * with a standard Linux CAN driver is supported.
+ * @details Uses the Linux kernel SocketCAN interface (PF_CAN / SOCK_RAW / CAN_RAW) with
+ *          CAN_RAW_FD_FRAMES enabled.  No proprietary library is required; any hardware
+ *          with a standard Linux CAN driver is supported.
+ *
+ * @copyright Copyright AU (c) 2026
  */
 
 #include <cerrno>

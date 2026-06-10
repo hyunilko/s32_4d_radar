@@ -5,12 +5,12 @@
  * @version 1.0
  * @date 2026-03
  *
- * @copyright Copyright AU (c) 2026
- *
  * @details Splits application payloads into 64-byte CAN-FD chunks. Each chunk
  *          carries a 2-byte header: PBF flag (bit 7) + 14-bit sequence number,
  *          followed by 62 bytes of data. The final chunk has PBF = 1.
  *          Reassembled payloads are delivered via a LongFrameRxCallback.
+ *
+ * @copyright Copyright AU (c) 2026
  */
 
 #include <cstring>
