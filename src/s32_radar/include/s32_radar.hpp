@@ -11,9 +11,9 @@
 #include <radar_msgs/msg/radar_scan.hpp>
 #include <radar_msgs/msg/radar_tracks.hpp>
 
-#include "pcan_short_frame_handler.hpp"
-#include "pcan_long_frame_handler.hpp"
-#include "pcan_fd_transport.hpp"
+#include "can_short_frame_handler.hpp"
+#include "can_long_frame_handler.hpp"
+#include "socketcan_fd_transport.hpp"
 #include "adm_tf_listener.hpp"
 
 namespace s32_radar
@@ -61,11 +61,11 @@ private:
     /* ----- internal members --------------------------------------------- */
 
     /* CAN transport — must be constructed before the handlers that reference it */
-    PcanFdTransport         can_fd_transfer_;
+    SocketCanFdTransport    can_fd_transfer_;
 
     /* Frame handlers hold a reference to can_fd_transfer_ */
-    PcanShortFrameHandler  can_short_handler_;
-    PcanLongFrameHandler   can_long_handler_;
+    CanShortFrameHandler  can_short_handler_;
+    CanLongFrameHandler   can_long_handler_;
 
     /* TF listener for radar pose updates */
     AdmTFListener          adm_tf_listener_;

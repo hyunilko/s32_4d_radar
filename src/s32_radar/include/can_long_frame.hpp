@@ -1,5 +1,5 @@
 /**
- * @file    pcan_long_frame.hpp
+ * @file    can_long_frame.hpp
  * @author  AU
  * @date    2026.03
  * @brief   long CAN Frame Handler (PC side)
@@ -17,9 +17,9 @@
 #include <functional>
 #include <vector>
 
-class PcanFdTransport;
+#include "can_fd_transport.hpp"
 
-struct PcanLongFrameConfig
+struct CanLongFrameConfig
 {
     uint16_t tx_base_id = 0x43u; /* PC -> S32 long */
     uint16_t rx_base_id = 0x43u; /* S32 -> PC long */
@@ -28,14 +28,14 @@ struct PcanLongFrameConfig
     bool quiet = false;
 };
 
-class PcanLongFrame
+class CanLongFrame
 {
 public:
     using LongFrameRxCallback = std::function<void(uint8_t dev_id, uint32_t frame_id, uint32_t frame_count, uint32_t msg_id, std::vector<uint8_t>&& payload)>;
 
-    using Config = PcanLongFrameConfig;
+    using Config = CanLongFrameConfig;
 
-    explicit PcanLongFrame(PcanFdTransport& transport, const Config& cfg = Config{});
+    explicit CanLongFrame(ICanFdTransport& transport, const Config& cfg = Config{});
 
     bool send_long_payload(uint8_t dev_id, uint32_t msg_id, const uint8_t* payload, int payload_len);
     bool handle_long_can_frame(uint32_t can_id, const uint8_t* data, uint8_t data_len);
@@ -63,7 +63,7 @@ private:
     void process_long_tp_frame(uint8_t dev_id, const uint8_t* data, uint8_t data_len);
 
 private:
-    PcanFdTransport& transport_;
+    ICanFdTransport& transport_;
     Config cfg_;
     LongFrameRxCallback rx_cb_;
     std::vector<RxState> rx_states_;

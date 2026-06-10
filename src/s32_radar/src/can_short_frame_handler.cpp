@@ -1,5 +1,5 @@
 /**
- * @file pcan_short_frame_handler.cpp
+ * @file can_short_frame_handler.cpp
  * @author antonioko@au-sensor.com
  * @brief High-level short-frame handler: time-sync. Business logic
  * @version 1.0
@@ -18,21 +18,21 @@
 #include "util/conversion.hpp"
 
 #include "s32_radar.hpp"
-#include "pcan_short_frame_handler.hpp"
+#include "can_short_frame_handler.hpp"
 
 namespace s32_radar
 {
 
 /**
- * @brief Constructs a PcanShortFrameHandler.
+ * @brief Constructs a CanShortFrameHandler.
  *
  * @param node   Pointer to the owning radar node (for publishing and logging).
- * @param can    Reference to PcanShortFrame (direct, no PcanFdTransport indirection).
- * @param logger ROS2 logger; defaults to "PcanShortFrameHandler".
+ * @param can    Reference to CanShortFrame (direct, no PcanFdTransport indirection).
+ * @param logger ROS2 logger; defaults to "CanShortFrameHandler".
  * @param quiet  If true, suppresses INFO/DEBUG log output.
  */
-PcanShortFrameHandler::PcanShortFrameHandler(device_radar_node* node,
-                                             PcanShortFrame& can,
+CanShortFrameHandler::CanShortFrameHandler(device_radar_node* node,
+                                             CanShortFrame& can,
                                              rclcpp::Logger logger,
                                              bool quiet)
     : can_short_(can)
@@ -43,10 +43,10 @@ PcanShortFrameHandler::PcanShortFrameHandler(device_radar_node* node,
 }
 
 /**
- * @brief Registers the RX callback on PcanShortFrame and forwards received short frames
+ * @brief Registers the RX callback on CanShortFrame and forwards received short frames
  *        to handle_short_frame().
  */
-void PcanShortFrameHandler::start(void)
+void CanShortFrameHandler::start(void)
 {
     can_short_.set_rx_callback(
         [this](uint8_t dev_id, ShortCanCmd cmd, uint32_t uniq_id,
@@ -57,14 +57,14 @@ void PcanShortFrameHandler::start(void)
 }
 
 /**
- * @brief Deregisters the PcanShortFrame RX callback.
+ * @brief Deregisters the CanShortFrame RX callback.
  */
-void PcanShortFrameHandler::stop(void)
+void CanShortFrameHandler::stop(void)
 {
-    can_short_.set_rx_callback(PcanShortFrame::ShortFrameRxCallback{});
+    can_short_.set_rx_callback(CanShortFrame::ShortFrameRxCallback{});
 
     if (!quiet_) {
-        RCLCPP_INFO(logger_, "PcanShortFrameHandler stopped");
+        RCLCPP_INFO(logger_, "CanShortFrameHandler stopped");
     }
 }
 
@@ -76,7 +76,7 @@ void PcanShortFrameHandler::stop(void)
  * @param uniq_id Unique ID from the frame.
  * @param data    Optional payload bytes.
  */
-void PcanShortFrameHandler::handle_short_frame(uint8_t dev_id, ShortCanCmd cmd,
+void CanShortFrameHandler::handle_short_frame(uint8_t dev_id, ShortCanCmd cmd,
                                                 uint32_t uniq_id,
                                                 const std::vector<uint8_t>& data)
 {
@@ -114,7 +114,7 @@ void PcanShortFrameHandler::handle_short_frame(uint8_t dev_id, ShortCanCmd cmd,
  * @param uniq_id Unique ID to echo back.
  * @return true on success, false if clock_gettime() or the send fails.
  */
-bool PcanShortFrameHandler::send_time_sync(uint8_t dev_id, uint32_t uniq_id)
+bool CanShortFrameHandler::send_time_sync(uint8_t dev_id, uint32_t uniq_id)
 {
     struct timespec ts{};
     if (clock_gettime(CLOCK_REALTIME, &ts) != 0) {

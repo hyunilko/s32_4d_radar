@@ -46,11 +46,11 @@ add_library(device_radar_node SHARED
   src/s32_radar.cpp
   src/util/yamlParser.cpp
   src/message_parse.cpp
-  src/pcan_long_frame_handler.cpp
-  src/pcan_short_frame_handler.cpp
-  src/pcan_fd_transport.cpp
-  src/pcan_short_frame.cpp
-  src/pcan_long_frame.cpp  
+  src/can_long_frame_handler.cpp
+  src/can_short_frame_handler.cpp
+  src/socketcan_fd_transport.cpp
+  src/can_short_frame.cpp
+  src/can_long_frame.cpp
   src/adm_tf_listener.cpp)
 
 target_compile_definitions(device_radar_node
@@ -58,14 +58,13 @@ target_compile_definitions(device_radar_node
 
 target_include_directories(device_radar_node
     PRIVATE
-    /usr/local/include
+    include
 )
 
 target_link_libraries(device_radar_node
     ${YAML_CPP_LIBRARIES}
     pthread
     Eigen3::Eigen
-    pcanbasic
 )
 
 ament_target_dependencies(device_radar_node

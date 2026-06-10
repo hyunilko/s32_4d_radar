@@ -1,5 +1,5 @@
 /**
- * @file pcan_short_frame.cpp
+ * @file can_short_frame.cpp
  * @author antonioko@au-sensor.com
  * @brief Single-frame CAN-FD command/response handler (short-frame protocol).
  * @version 1.0
@@ -18,22 +18,21 @@
 #include <utility>
 
 #include "rclcpp/rclcpp.hpp"
-#include "pcan_fd_transport.hpp"
 #include "util/conversion.hpp"
 
-#include "pcan_short_frame.hpp"
+#include "can_short_frame.hpp"
 
 static constexpr uint8_t CMD_FIELD_LEN    = 3u;   /* CMD(3B BE) */
 static constexpr uint8_t UNIQ_ID_LEN      = 4u;   /* unique ID(4B BE) */
 static constexpr uint8_t SHORT_MAX_BYTES  = 57u;  /* 64B - CMD(3B) - unique ID(4B) */
 
 /**
- * @brief Constructs a PcanShortFrame storing the transport reference and config.
+ * @brief Constructs a CanShortFrame storing the transport reference and config.
  *
  * @param transport Reference to the transport layer used for sending frames.
  * @param cfg  Short-frame configuration (TX/RX base IDs, device count).
  */
-PcanShortFrame::PcanShortFrame(PcanFdTransport& transport, const Config& cfg)
+CanShortFrame::CanShortFrame(ICanFdTransport& transport, const Config& cfg)
     : transport_(transport)
     , cfg_(cfg)
 {
@@ -45,13 +44,13 @@ PcanShortFrame::PcanShortFrame(PcanFdTransport& transport, const Config& cfg)
  * @param cb Callback: void(dev_id, cmd, uniq_id, payload).
  *           Pass an empty std::function to deregister.
  */
-void PcanShortFrame::set_rx_callback(ShortFrameRxCallback cb)
+void CanShortFrame::set_rx_callback(ShortFrameRxCallback cb)
 {
     std::lock_guard<std::mutex> lk(mtx_);
     rx_cb_ = std::move(cb);
 }
 
-void PcanShortFrame::set_ack_rx_callback(AckRxCallback cb)
+void CanShortFrame::set_ack_rx_callback(AckRxCallback cb)
 {
     std::lock_guard<std::mutex> lk(mtx_);
     ack_rx_cb_ = std::move(cb);
@@ -65,7 +64,7 @@ void PcanShortFrame::set_ack_rx_callback(AckRxCallback cb)
  * @param cmd     Command identifier.
  * @return true on success, false on error.
  */
-bool PcanShortFrame::send_short_command(uint8_t dev_id, uint32_t uniq_id, ShortCanCmd cmd)
+bool CanShortFrame::send_short_command(uint8_t dev_id, uint32_t uniq_id, ShortCanCmd cmd)
 {
     return send_short_command_with_data(dev_id, static_cast<uint32_t>(cmd), uniq_id, nullptr, 0u);
 }
@@ -78,7 +77,7 @@ bool PcanShortFrame::send_short_command(uint8_t dev_id, uint32_t uniq_id, ShortC
  * @param cmd     received Command identifier.
  * @return true on success, false on error.
  */
-bool PcanShortFrame::send_short_command_ack(uint8_t dev_id, uint32_t uniq_id, ShortCanCmd rcv_cmd)
+bool CanShortFrame::send_short_command_ack(uint8_t dev_id, uint32_t uniq_id, ShortCanCmd rcv_cmd)
 {
     uint8_t frame[CMD_FIELD_LEN] = {0u, };
     uint32_t cmd_ack = static_cast<uint32_t>(rcv_cmd) | CAN_CMD_ACK;
@@ -99,7 +98,7 @@ bool PcanShortFrame::send_short_command_ack(uint8_t dev_id, uint32_t uniq_id, Sh
  * @param payload_len Extra payload length in bytes (max 56).
  * @return true on success, false on error.
  */
-bool PcanShortFrame::send_short_command_with_data(uint8_t dev_id,
+bool CanShortFrame::send_short_command_with_data(uint8_t dev_id,
                                                   uint32_t cmd,
                                                   uint32_t uniq_id,
                                                   const uint8_t* payload,
@@ -112,7 +111,7 @@ bool PcanShortFrame::send_short_command_with_data(uint8_t dev_id,
         return false;
     }
     if (payload_len > SHORT_MAX_BYTES) {
-        RCLCPP_WARN(rclcpp::get_logger("PcanShortFrame"),
+        RCLCPP_WARN(rclcpp::get_logger("CanShortFrame"),
                     "send_short_command_with_data: payload too large (%u > %u), truncating",
                     payload_len, SHORT_MAX_BYTES);
         payload_len = SHORT_MAX_BYTES;
@@ -129,15 +128,15 @@ bool PcanShortFrame::send_short_command_with_data(uint8_t dev_id,
     uint16_t can_id;
 
     if((cmd & 0xFFu) == CAN_CMD_ACK)
-        can_id = ((dev_id << PcanFdTransport::CAN_DEVICE_ID_SHIFT) | cfg_.ack_base_id);
+        can_id = ((dev_id << ICanFdTransport::CAN_DEVICE_ID_SHIFT) | cfg_.ack_base_id);
     else
-        can_id = ((dev_id << PcanFdTransport::CAN_DEVICE_ID_SHIFT) | cfg_.tx_base_id);
+        can_id = ((dev_id << ICanFdTransport::CAN_DEVICE_ID_SHIFT) | cfg_.tx_base_id);
         
     const uint8_t total_len = static_cast<uint8_t>(CMD_FIELD_LEN + UNIQ_ID_LEN + payload_len);
 
     const bool ok = transport_.send_data(can_id, frame, total_len);
     if (!ok && !cfg_.quiet) {
-        RCLCPP_ERROR(rclcpp::get_logger("PcanShortFrame"),
+        RCLCPP_ERROR(rclcpp::get_logger("CanShortFrame"),
                      "send_short_command_with_data: send_data failed (dev=%u, cmd=0x%08X)",
                      dev_id, cmd);
     }
@@ -152,13 +151,13 @@ bool PcanShortFrame::send_short_command_with_data(uint8_t dev_id,
  * @param dev_id_out  Set to the device index when the function returns true.
  * @return true if can_id maps to a valid device, false otherwise.
  */
-bool PcanShortFrame::is_short_rx_can_id(uint32_t can_id, uint8_t& dev_id_out) const
+bool CanShortFrame::is_short_rx_can_id(uint32_t can_id, uint8_t& dev_id_out) const
 {
-    if ((can_id & PcanFdTransport::CAN_TP_ID_MASK) != cfg_.rx_base_id) {
+    if ((can_id & ICanFdTransport::CAN_TP_ID_MASK) != cfg_.rx_base_id) {
         return false;
     }
 
-    const uint32_t dev = static_cast<uint8_t>((can_id & PcanFdTransport::CAN_DEVICE_ID_MASK) >> PcanFdTransport::CAN_DEVICE_ID_SHIFT);
+    const uint32_t dev = static_cast<uint8_t>((can_id & ICanFdTransport::CAN_DEVICE_ID_MASK) >> ICanFdTransport::CAN_DEVICE_ID_SHIFT);
     if (dev >= cfg_.device_count) {
         return false;
     }
@@ -175,7 +174,7 @@ bool PcanShortFrame::is_short_rx_can_id(uint32_t can_id, uint8_t& dev_id_out) co
  * @param data_len Payload length.
  * @return true if handled, false if the CAN ID is out of range.
  */
-bool PcanShortFrame::handle_short_can_frame(uint32_t can_id, const uint8_t* data, uint8_t data_len)
+bool CanShortFrame::handle_short_can_frame(uint32_t can_id, const uint8_t* data, uint8_t data_len)
 {
     uint8_t dev_id = 0u;
     if (!is_short_rx_can_id(can_id, dev_id)) {
@@ -186,13 +185,13 @@ bool PcanShortFrame::handle_short_can_frame(uint32_t can_id, const uint8_t* data
     return true;
 }
 
-bool PcanShortFrame::is_ack_rx_can_id(uint32_t can_id, uint8_t& dev_id_out) const
+bool CanShortFrame::is_ack_rx_can_id(uint32_t can_id, uint8_t& dev_id_out) const
 {
-    if ((can_id & PcanFdTransport::CAN_TP_ID_MASK) != cfg_.ack_base_id) {
+    if ((can_id & ICanFdTransport::CAN_TP_ID_MASK) != cfg_.ack_base_id) {
         return false;
     }
 
-    const uint32_t dev = static_cast<uint8_t>((can_id & PcanFdTransport::CAN_DEVICE_ID_MASK) >> PcanFdTransport::CAN_DEVICE_ID_SHIFT);
+    const uint32_t dev = static_cast<uint8_t>((can_id & ICanFdTransport::CAN_DEVICE_ID_MASK) >> ICanFdTransport::CAN_DEVICE_ID_SHIFT);
     if (dev >= cfg_.device_count) {
         return false;
     }
@@ -201,7 +200,7 @@ bool PcanShortFrame::is_ack_rx_can_id(uint32_t can_id, uint8_t& dev_id_out) cons
     return true;
 }
 
-bool PcanShortFrame::handle_ack_can_frame(uint32_t can_id, const uint8_t* data, uint8_t data_len)
+bool CanShortFrame::handle_ack_can_frame(uint32_t can_id, const uint8_t* data, uint8_t data_len)
 {
     uint8_t dev_id = 0u;
     if (!is_ack_rx_can_id(can_id, dev_id)) {
@@ -212,13 +211,13 @@ bool PcanShortFrame::handle_ack_can_frame(uint32_t can_id, const uint8_t* data, 
     return true;
 }
 
-void PcanShortFrame::process_ack_frame(uint8_t dev_id, const uint8_t* data, uint8_t data_len)
+void CanShortFrame::process_ack_frame(uint8_t dev_id, const uint8_t* data, uint8_t data_len)
 {
     if (data == nullptr) {
         return;
     }
     if (data_len < CMD_FIELD_LEN) {
-        RCLCPP_WARN(rclcpp::get_logger("PcanShortFrame"),
+        RCLCPP_WARN(rclcpp::get_logger("CanShortFrame"),
                     "process_ack_frame: frame too short (dev=%u, len=%u)",
                     dev_id, data_len);
         return;
@@ -252,13 +251,13 @@ void PcanShortFrame::process_ack_frame(uint8_t dev_id, const uint8_t* data, uint
  * @param data     Raw frame payload bytes.
  * @param data_len Payload length (must be ≥ 3 to carry the CMD field).
  */
-void PcanShortFrame::process_short_frame(uint8_t dev_id, const uint8_t* data, uint8_t data_len)
+void CanShortFrame::process_short_frame(uint8_t dev_id, const uint8_t* data, uint8_t data_len)
 {
     if (data == nullptr) {
         return;
     }
     if (data_len < CMD_FIELD_LEN) {
-        RCLCPP_WARN(rclcpp::get_logger("PcanShortFrame"),
+        RCLCPP_WARN(rclcpp::get_logger("CanShortFrame"),
                     "process_short_frame: frame too short (dev=%u, len=%u)",
                     dev_id, data_len);
         return;
@@ -278,7 +277,7 @@ void PcanShortFrame::process_short_frame(uint8_t dev_id, const uint8_t* data, ui
     const std::vector<uint8_t> payload(data + payload_offset, data + payload_offset + payload_len);
 
     if (!cfg_.quiet) {
-       // RCLCPP_INFO(rclcpp::get_logger("PcanShortFrame"),
+       // RCLCPP_INFO(rclcpp::get_logger("CanShortFrame"),
        //             "[Short RX] dev=%u cmd=0x%08X uniq_id=0x%08X payload_len=%u",
        //             dev_id, cmd_raw, uniq_id, payload_len);
     }

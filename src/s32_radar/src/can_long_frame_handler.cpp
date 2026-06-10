@@ -1,5 +1,5 @@
 /**
- * @file pcan_long_frame_handler.cpp
+ * @file can_long_frame_handler.cpp
  * @author Antonio Ko (antonioko@au-sensor.com)
  * @brief Long CAN frame receive/dispatch handler. Business logic
  * @version 1.0
@@ -16,7 +16,7 @@
 #include "s32_radar.hpp"
 #include "util/conversion.hpp"
 #include "util/yamlParser.hpp"
-#include "pcan_long_frame_handler.hpp"
+#include "can_long_frame_handler.hpp"
 
 namespace s32_radar {
 
@@ -25,13 +25,13 @@ namespace s32_radar {
  * ========================================================================= */
 
 /**
- * @brief Constructs a PcanLongFrameHandler.
+ * @brief Constructs a CanLongFrameHandler.
  *
  * @param node Pointer to the owning radar node (for publishing and logging).
- * @param can  Reference to the PcanLongFrame layer (direct, no PcanFdTransport indirection).
+ * @param can  Reference to the CanLongFrame layer (direct, no PcanFdTransport indirection).
  */
-PcanLongFrameHandler::PcanLongFrameHandler(device_radar_node* node,
-                                           PcanLongFrame& can)
+CanLongFrameHandler::CanLongFrameHandler(device_radar_node* node,
+                                           CanLongFrame& can)
     : radar_node_(node)
     , can_long_(can)
     , message_parser_(node->get_logger())
@@ -41,7 +41,7 @@ PcanLongFrameHandler::PcanLongFrameHandler(device_radar_node* node,
 /**
  * @brief Destructor. Calls stop() to cleanly join all worker threads.
  */
-PcanLongFrameHandler::~PcanLongFrameHandler()
+CanLongFrameHandler::~CanLongFrameHandler()
 {
     stop();
 }
@@ -51,11 +51,11 @@ PcanLongFrameHandler::~PcanLongFrameHandler()
  * ========================================================================= */
 
 /**
- * @brief Registers the long-frame RX callback on PcanLongFrame and starts the
+ * @brief Registers the long-frame RX callback on CanLongFrame and starts the
  *        process/client threads.
  *
  */
-void PcanLongFrameHandler::start()
+void CanLongFrameHandler::start()
 {
     if (!initialize()) {
         RCLCPP_ERROR(radar_node_->get_logger(),
@@ -66,7 +66,7 @@ void PcanLongFrameHandler::start()
     process_thread_running_.store(true);
     client_threads_running_.store(true);
 
-    process_thread_ = std::thread(&PcanLongFrameHandler::processThread, this);
+    process_thread_ = std::thread(&CanLongFrameHandler::processThread, this);
 }
 
 /**
@@ -75,7 +75,7 @@ void PcanLongFrameHandler::start()
  * @details stop_rx() / shutdown() are handled by the PcanFdTransport destructor.
  *          This handler only deregisters the RX callback it registered.
  */
-void PcanLongFrameHandler::stop()
+void CanLongFrameHandler::stop()
 {
     process_thread_running_.store(false);
     client_threads_running_.store(false);
@@ -104,7 +104,7 @@ void PcanLongFrameHandler::stop()
         client_queue_cvs_.clear();
     }
 
-    can_long_.set_rx_callback(PcanLongFrame::LongFrameRxCallback{});
+    can_long_.set_rx_callback(CanLongFrame::LongFrameRxCallback{});
 }
 
 /**
@@ -116,7 +116,7 @@ void PcanLongFrameHandler::stop()
  * @param payload_len Payload length in bytes.
  * @return payload_len on success, -1 on failure.
  */
-int PcanLongFrameHandler::sendMessages(uint8_t device_id, uint32_t msg_id,
+int CanLongFrameHandler::sendMessages(uint8_t device_id, uint32_t msg_id,
                                        const uint8_t* payload, int payload_len)
 {
     return can_long_.send_long_payload(device_id, msg_id, payload, payload_len) ? payload_len : -1;
@@ -127,21 +127,21 @@ int PcanLongFrameHandler::sendMessages(uint8_t device_id, uint32_t msg_id,
  * ========================================================================= */
 
 /**
- * @brief Registers the long-frame RX callback directly on PcanLongFrame.
+ * @brief Registers the long-frame RX callback directly on CanLongFrame.
  *
- * @details Since can_long_ is already a PcanLongFrame& reference, set_rx_callback()
+ * @details Since can_long_ is already a CanLongFrame& reference, set_rx_callback()
  *          is called directly on it.
  *
  * @return true always (PCAN hardware init is handled by PcanFdTransport::start()).
  */
-bool PcanLongFrameHandler::initialize()
+bool CanLongFrameHandler::initialize()
 {
     point_cloud2_enabled_ = YamlParser::getPointCloud2Enabled();
     message_number_       = YamlParser::getMessageNumber();
 
-    RCLCPP_DEBUG(radar_node_->get_logger(), "PcanLongFrameHandler::initialize()");
+    RCLCPP_DEBUG(radar_node_->get_logger(), "CanLongFrameHandler::initialize()");
 
-    /* can_long_ is a PcanLongFrame& reference — call set_rx_callback() directly */
+    /* can_long_ is a CanLongFrame& reference — call set_rx_callback() directly */
     can_long_.set_rx_callback(
         [this](uint8_t  /*dev_id*/,
                uint32_t /*frame_id*/,
@@ -189,7 +189,7 @@ bool PcanLongFrameHandler::initialize()
  *          pushes the buffer to the per-device client queue, and spawns a
  *          clientThread() for that ID on first encounter.
  */
-void PcanLongFrameHandler::processThread()
+void CanLongFrameHandler::processThread()
 {
     std::vector<uint8_t> buffer;
     buffer.reserve(kBufferSize);
@@ -242,7 +242,7 @@ void PcanLongFrameHandler::processThread()
                     std::lock_guard<std::mutex> qlk(client_queue_mutex_);
                     (void)client_queue_cvs_[unique_id]; /* default-construct */
                 }
-                client_threads_.emplace(unique_id, std::thread(&PcanLongFrameHandler::clientThread, this, unique_id));
+                client_threads_.emplace(unique_id, std::thread(&CanLongFrameHandler::clientThread, this, unique_id));
             }
         }
 
@@ -266,7 +266,7 @@ void PcanLongFrameHandler::processThread()
  *
  * @param unique_id The sensor unique ID this thread is dedicated to.
  */
-void PcanLongFrameHandler::clientThread(uint32_t unique_id)
+void CanLongFrameHandler::clientThread(uint32_t unique_id)
 {
     radar_msgs::msg::RadarScan    radar_scan_msg;
     radar_msgs::msg::RadarTracks  radar_tracks_msg;
@@ -323,7 +323,7 @@ void PcanLongFrameHandler::clientThread(uint32_t unique_id)
  * @param buffer         Raw payload buffer.
  * @param radar_scan_msg Accumulates RadarReturn entries; cleared after each publish.
  */
-void PcanLongFrameHandler::handleScanMessage(
+void CanLongFrameHandler::handleScanMessage(
     std::vector<uint8_t>& buffer,
     radar_msgs::msg::RadarScan& radar_scan_msg)
 {
@@ -358,7 +358,7 @@ void PcanLongFrameHandler::handleScanMessage(
  * @param radar_cloud_msg    Per-packet cloud data; cleared after assembly.
  * @param radar_cloud_buffer Rolling buffer of recent clouds for multi-frame assembly.
  */
-void PcanLongFrameHandler::handlePointCloud2Message(
+void CanLongFrameHandler::handlePointCloud2Message(
     std::vector<uint8_t>& buffer,
     sensor_msgs::msg::PointCloud2& radar_cloud_msg,
     std::deque<sensor_msgs::msg::PointCloud2>& radar_cloud_buffer)
@@ -403,7 +403,7 @@ void PcanLongFrameHandler::handlePointCloud2Message(
  * @param msg    Newly completed per-packet cloud to add.
  * @param out    Output cloud combining all buffered messages.
  */
-void PcanLongFrameHandler::assemblePointCloud(
+void CanLongFrameHandler::assemblePointCloud(
     std::deque<sensor_msgs::msg::PointCloud2>& buffer,
     const sensor_msgs::msg::PointCloud2& msg,
     sensor_msgs::msg::PointCloud2& out)
@@ -442,7 +442,7 @@ void PcanLongFrameHandler::assemblePointCloud(
  * @param src Cloud to merge (width, row_step, and data are added to dst).
  * @param dst Accumulator cloud that is extended in place.
  */
-void PcanLongFrameHandler::mergePointCloud(
+void CanLongFrameHandler::mergePointCloud(
     const sensor_msgs::msg::PointCloud2& src,
     sensor_msgs::msg::PointCloud2& dst)
 {
@@ -459,7 +459,7 @@ void PcanLongFrameHandler::mergePointCloud(
  * @param time_sync_cloud Current value (nanosec / 50,000,000).
  * @return true if the value changed since the last call, false if unchanged.
  */
-bool PcanLongFrameHandler::isNewTimeSync(uint32_t time_sync_cloud)
+bool CanLongFrameHandler::isNewTimeSync(uint32_t time_sync_cloud)
 {
     const bool is_new = (time_sync_pre_cloud_ != time_sync_cloud);
     time_sync_pre_cloud_ = time_sync_cloud;
@@ -478,7 +478,7 @@ bool PcanLongFrameHandler::isNewTimeSync(uint32_t time_sync_cloud)
  * @param buffer           Raw payload buffer.
  * @param radar_tracks_msg Accumulates RadarTrack entries; cleared after publish.
  */
-void PcanLongFrameHandler::handleRadarTrackMessage(
+void CanLongFrameHandler::handleRadarTrackMessage(
     std::vector<uint8_t>& buffer,
     radar_msgs::msg::RadarTracks& radar_tracks_msg)
 {

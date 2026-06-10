@@ -4,19 +4,19 @@
 #include <vector>
 
 #include "rclcpp/logger.hpp"
-#include "pcan_short_frame.hpp"
+#include "can_short_frame.hpp"
 
 namespace s32_radar
 {
     class device_radar_node;
 
-    class PcanShortFrameHandler
+    class CanShortFrameHandler
     {
     public:
-        explicit PcanShortFrameHandler(
+        explicit CanShortFrameHandler(
             device_radar_node* node,
-            PcanShortFrame& can,
-            rclcpp::Logger logger = rclcpp::get_logger("PcanShortFrameHandler"),
+            CanShortFrame& can,
+            rclcpp::Logger logger = rclcpp::get_logger("CanShortFrameHandler"),
             bool quiet = false);
 
         void start(void);
@@ -28,7 +28,7 @@ namespace s32_radar
 
         bool send_time_sync(uint8_t dev_id, uint32_t uniq_id);
 
-        PcanShortFrame& can_short_;
+        CanShortFrame& can_short_;
         rclcpp::Logger  logger_;
         bool            quiet_ = true;
 

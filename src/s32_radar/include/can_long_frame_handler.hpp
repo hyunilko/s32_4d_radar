@@ -13,17 +13,17 @@
 #include <vector>
 
 #include "message_parse.hpp"   /* MessageParser, HeaderType */
-#include "pcan_long_frame.hpp"
+#include "can_long_frame.hpp"
 
 namespace s32_radar
 {
     class device_radar_node;
 
-    class PcanLongFrameHandler
+    class CanLongFrameHandler
     {
     public:
-        explicit PcanLongFrameHandler(device_radar_node* node, PcanLongFrame& can);
-        ~PcanLongFrameHandler();
+        explicit CanLongFrameHandler(device_radar_node* node, CanLongFrame& can);
+        ~CanLongFrameHandler();
 
         void start();
         void stop();
@@ -70,7 +70,7 @@ namespace s32_radar
         device_radar_node* radar_node_;
 
         /* CAN Long Frame layer */
-        PcanLongFrame& can_long_;
+        CanLongFrame& can_long_;
 
         /* Per-instance message parser */
         MessageParser message_parser_;

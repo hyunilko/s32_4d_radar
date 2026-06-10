@@ -1,5 +1,5 @@
 /**
- * @file    pcan_short_frame.hpp
+ * @file    can_short_frame.hpp
  * @author  AU
  * @date    2026.03
  * @brief   Short CAN Frame Handler (PC side)
@@ -21,7 +21,7 @@
 #include <mutex>
 #include <vector>
 
-class PcanFdTransport;
+#include "can_fd_transport.hpp"
 
 enum class ShortCanCmd : uint32_t
 {
@@ -34,7 +34,7 @@ enum class ShortCanCmd : uint32_t
     REQUEST_CONNECTION = 0x404400u,
 };
 
-struct PcanShortFrameConfig
+struct CanShortFrameConfig
 {
     uint16_t tx_base_id = 0x42u; /* PC -> S32 */
     uint16_t rx_base_id = 0x42u; /* S32 -> PC */
@@ -43,15 +43,15 @@ struct PcanShortFrameConfig
     bool quiet = false;
 };
 
-class PcanShortFrame
+class CanShortFrame
 {
 public:
     using ShortFrameRxCallback = std::function<void(uint8_t dev_id, ShortCanCmd cmd, uint32_t uniq_id, const std::vector<uint8_t>& payload)>;
     using AckRxCallback        = std::function<void(uint8_t dev_id, ShortCanCmd cmd, uint32_t uniq_id, const std::vector<uint8_t>& payload)>;
 
-    using Config = PcanShortFrameConfig;
+    using Config = CanShortFrameConfig;
 
-    explicit PcanShortFrame(PcanFdTransport& transport, const Config& cfg = Config{});
+    explicit CanShortFrame(ICanFdTransport& transport, const Config& cfg = Config{});
 
     bool send_short_command(uint8_t dev_id, uint32_t uniq_id, ShortCanCmd cmd);
     bool send_short_command_ack(uint8_t dev_id, uint32_t uniq_id, ShortCanCmd rcv_cmd);
@@ -70,7 +70,7 @@ private:
     void process_ack_frame(uint8_t dev_id, const uint8_t* data, uint8_t data_len);
 
 private:
-    PcanFdTransport& transport_;
+    ICanFdTransport& transport_;
     Config cfg_;
     ShortFrameRxCallback rx_cb_;
     AckRxCallback        ack_rx_cb_;
