@@ -2,4 +2,5 @@ build
 install
 log
 .vscode
-g-log-*.txt
+debug-log-*.txt
+
